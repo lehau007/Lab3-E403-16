@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  price REAL NOT NULL,
+  stock INTEGER NOT NULL,
+  weight REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS coupons (
+  code TEXT PRIMARY KEY,
+  discount_pct REAL NOT NULL
+);

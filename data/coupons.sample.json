@@ -1,0 +1,10 @@
+[
+  {
+    "code": "WINNER",
+    "discount_pct": 10
+  },
+  {
+    "code": "NEWBIE",
+    "discount_pct": 5
+  }
+]

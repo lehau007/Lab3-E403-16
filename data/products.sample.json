@@ -1,0 +1,16 @@
+[
+  {
+    "id": "p001",
+    "name": "iphone 15",
+    "price": 22000000,
+    "stock": 12,
+    "weight": 0.4
+  },
+  {
+    "id": "p002",
+    "name": "airpods pro",
+    "price": 5500000,
+    "stock": 30,
+    "weight": 0.1
+  }
+]
