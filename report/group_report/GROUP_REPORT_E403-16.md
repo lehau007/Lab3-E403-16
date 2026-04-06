@@ -1,6 +1,7 @@
 # Group Report: Lab 3 - Production-Grade Agentic System
 
 - **Team Name**: E403-16
+- **Team Members**: Lê Văn Hậu (2A202600110), Nguyễn Bá Hào (2A202600133), Trương Quang Lộc(2A202600333),  Ngô Anh Tú (2A202600128)
 - **Deployment Date**: 2026-04-06
 
 ---
@@ -35,12 +36,15 @@ Agent versions:
 
 | Tool Name | Input Format | Use Case |
 | :--- | :--- | :--- |
-| `list_all_products` | none | Discovery-only lookup, returns product `id` + `name` for description-to-id mapping. |
+| `list_all_products` | none | Discovery-only lookup, returns product `id`, `name`, `price`, `stock` for description-to-id mapping. |
+| `search_products` | `keyword: string` | Search products by keyword (fuzzy match), returns matching items. |
+| `compare_products` | `product_id_1, product_id_2: string` | Compare two products side-by-side by their IDs. |
 | `check_stock` | `item_name: string` | Check stock by exact name, returns product id if found. |
 | `check_stock_by_id` | `product_id: string` | Check stock by canonical id (preferred after discovery). |
 | `get_product_by_id` | `product_id: string` | Fetch full product details (price, stock, weight). |
+| `list_coupons` | none | List all available coupon codes and their discount percentages. |
 | `get_discount` | `coupon_code: string` | Return discount percentage from coupon table. |
-| `calc_shipping` | `weight: float, destination: string` | Estimate shipping fee. |
+| `calc_shipping` | `weight: float, destination: string` | Estimate shipping fee (includes dynamic surcharge for certain cities). |
 | `estimate_total` | `product_id, quantity, coupon_code?, destination?` | End-to-end total estimation (subtotal, discount, shipping, final total). |
 
 ### 2.3 LLM Providers Used
@@ -119,4 +123,4 @@ Observed reliability indicators:
 ## Appendix: Submission Notes
 
 - This report uses real project telemetry logs and current implementation state.
-- Please update team members before final submission.
+- This report uses real project telemetry logs and current implementation state.
