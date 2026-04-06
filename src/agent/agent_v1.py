@@ -172,15 +172,15 @@ class ReActAgentV1:
 
     def _execute_tool(self, tool_name: Optional[str], args_payload: Any) -> str:
         if not tool_name:
-            return json.dumps({"error": "missing_tool_name"})
+            return json.dumps({"error": "missing_tool_name"}, ensure_ascii=False)
 
         tool = self.tool_map.get(tool_name)
         if not tool:
-            return json.dumps({"error": "hallucinated_tool", "tool": tool_name})
+            return json.dumps({"error": "hallucinated_tool", "tool": tool_name}, ensure_ascii=False)
 
         fn = tool.get("fn") or tool.get("func") or tool.get("callable")
         if not callable(fn):
-            return json.dumps({"error": "tool_not_callable", "tool": tool_name})
+            return json.dumps({"error": "tool_not_callable", "tool": tool_name}, ensure_ascii=False)
 
         try:
             if isinstance(args_payload, dict):
@@ -196,8 +196,11 @@ class ReActAgentV1:
             # Fallback: pass raw payload as a single positional argument.
             result = fn(args_payload)
         except Exception as exc:
-            return json.dumps({"error": "tool_execution_error", "tool": tool_name, "message": str(exc)})
+            return json.dumps(
+                {"error": "tool_execution_error", "tool": tool_name, "message": str(exc)},
+                ensure_ascii=False,
+            )
 
         if isinstance(result, (dict, list)):
-            return json.dumps(result, ensure_ascii=True)
+            return json.dumps(result, ensure_ascii=False)
         return str(result)

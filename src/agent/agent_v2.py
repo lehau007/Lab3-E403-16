@@ -116,7 +116,7 @@ class ReActAgentV2(ReActAgentV1):
 
             if tool_name not in self.tool_map:
                 hallucinated_tool_count += 1
-                observation = json.dumps({"error": "hallucinated_tool", "tool": tool_name})
+                observation = json.dumps({"error": "hallucinated_tool", "tool": tool_name}, ensure_ascii=False)
                 logger.log_event(
                     "AGENT_HALLUCINATED_TOOL",
                     {
