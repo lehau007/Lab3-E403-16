@@ -1,6 +1,6 @@
 import argparse
 import os
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
 
@@ -67,6 +67,43 @@ def run_once(mode: str, llm: LLMProvider, user_input: str, backend: str, max_ste
     # v2 prompt includes stricter rules and keeps inherited failure-aware guardrails.
     agent.get_system_prompt = lambda: AGENT_V2_SYSTEM_PROMPT + "\n\n" + agent.__class__.get_system_prompt(agent)
     return agent.run(user_input)
+
+
+def run_once_with_trace(
+    mode: str,
+    llm: LLMProvider,
+    user_input: str,
+    backend: str,
+    max_steps: int,
+) -> Dict[str, Any]:
+    if mode == "chatbot":
+        answer = run_chatbot(user_input=user_input, llm=llm, system_prompt=CHATBOT_SYSTEM_PROMPT)
+        return {
+            "answer": answer,
+            "reasoning": [
+                {
+                    "step": 1,
+                    "status": "single_shot",
+                    "llm_output": answer,
+                }
+            ],
+        }
+
+    repo = build_repository(backend=backend)
+    tools = create_tool_registry(repo=repo)
+
+    if mode == "v1":
+        agent = ReActAgentV1(llm=llm, tools=tools, max_steps=max_steps)
+        agent.get_system_prompt = lambda: AGENT_V1_SYSTEM_PROMPT + "\n\n" + agent.__class__.get_system_prompt(agent)
+        answer = agent.run(user_input)
+        reasoning: List[Dict[str, Any]] = getattr(agent, "last_loop_trace", [])
+        return {"answer": answer, "reasoning": reasoning}
+
+    agent = ReActAgentV2(llm=llm, tools=tools, max_steps=max_steps)
+    agent.get_system_prompt = lambda: AGENT_V2_SYSTEM_PROMPT + "\n\n" + agent.__class__.get_system_prompt(agent)
+    answer = agent.run(user_input)
+    reasoning = getattr(agent, "last_loop_trace", [])
+    return {"answer": answer, "reasoning": reasoning}
 
 
 def main() -> None:

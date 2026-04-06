@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 
 def list_all_products(repo: Any) -> Dict[str, Any]:
-    """Return the entire product catalog so the agent can ground on real IDs."""
+    """Return discovery-only catalog fields so agent can map description to product id."""
     products = repo.get_products()
     normalized = []
     for p in products:
@@ -10,9 +10,6 @@ def list_all_products(repo: Any) -> Dict[str, Any]:
             {
                 "id": p.get("id"),
                 "name": p.get("name"),
-                "price": p.get("price"),
-                "stock": p.get("stock"),
-                "weight": p.get("weight"),
             }
         )
     return {"count": len(normalized), "products": normalized}

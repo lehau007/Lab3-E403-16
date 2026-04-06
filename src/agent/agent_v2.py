@@ -1,4 +1,5 @@
 import json
+import re
 from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
@@ -39,6 +40,8 @@ class ReActAgentV2(ReActAgentV1):
             "2) Never call unknown tools; use only tool names listed in system prompt.\n"
             "3) If the same tool call repeats with same arguments, change plan or finish safely.\n"
             "4) If user describes product vaguely, call list_all_products then map description to product id.\n"
+            "5) Do not claim any product detail unless it appears in a tool Observation.\n"
+            "6) If observation does not contain required data, call the proper id-based tool before Final Answer.\n"
         )
         return base + trace_block + guardrails
 
@@ -56,6 +59,15 @@ class ReActAgentV2(ReActAgentV1):
             if not catalog_loaded and "list_all_products" in self.tool_map:
                 forced_observation = self._execute_tool("list_all_products", {})
                 catalog_loaded = True
+                self.last_loop_trace.append(
+                    {
+                        "step": step,
+                        "status": "guardrail_forced_tool",
+                        "tool": "list_all_products",
+                        "args": {},
+                        "observation": forced_observation,
+                    }
+                )
                 scratchpad += (
                     "\nLLM Output:\n"
                     "Thought: I should ground on real inventory first.\n"
@@ -77,6 +89,12 @@ class ReActAgentV2(ReActAgentV1):
                 latency_ms=result.get("latency_ms", 0),
             )
             content = (result.get("content") or "").strip()
+            
+            # Ngăn chặn LLM hallucination
+            obs_match = re.search(r'Observation:', content, flags=re.IGNORECASE)
+            if obs_match:
+                content = content[:obs_match.start()].strip()
+                
             logger.log_event("AGENT_STEP", {"version": "v2", "step": step, "llm_output": content})
 
             final_answer = self._extract_final_answer(content)
@@ -150,7 +168,7 @@ class ReActAgentV2(ReActAgentV1):
     def _action_signature(self, tool_name: Optional[str], args_payload: Any) -> str:
         if isinstance(args_payload, dict):
             try:
-                normalized_args = json.dumps(args_payload, sort_keys=True, ensure_ascii=True)
+                normalized_args = json.dumps(args_payload, sort_keys=True, ensure_ascii=False)
             except TypeError:
                 normalized_args = str(args_payload)
         else:

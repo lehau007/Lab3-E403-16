@@ -72,8 +72,9 @@ def create_tool_registry(repo: Any) -> List[Dict[str, Any]]:
         {
             "name": "list_all_products",
             "description": (
-                "Return the complete product catalog with id, name, price, stock, and weight. "
-                "Call this first when user describes product vaguely."
+                "Return only product id and name for discovery/search. "
+                "Use this first to map user description to a product id. "
+                "Do not use this tool for detailed product info."
             ),
             "fn": lambda: list_all_products(repo=repo),
         },
@@ -89,7 +90,7 @@ def create_tool_registry(repo: Any) -> List[Dict[str, Any]]:
         },
         {
             "name": "get_product_by_id",
-            "description": "Return full product data by product id.",
+            "description": "Return full product details by product id after product selection.",
             "fn": get_product,
         },
         {
