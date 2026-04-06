@@ -8,8 +8,6 @@ def list_all_products(repo: Any) -> Dict[str, Any]:
         {
             "id": p.get("id"),
             "name": p.get("name"),
-            "price": p.get("price", 0),
-            "stock": p.get("stock", 0),
         }
         for p in products
     ]

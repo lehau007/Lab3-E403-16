@@ -38,8 +38,9 @@ class TestProductLookupParams:
         assert params.has_lookup_key()
     
     def test_neither_provided(self):
-        params = ProductLookupParams()
-        assert not params.has_lookup_key()
+        from pydantic import ValidationError
+        with pytest.raises(ValidationError):
+            ProductLookupParams()
     
     def test_whitespace_stripped(self):
         params = ProductLookupParams(product_id="  p001  ")
@@ -170,8 +171,9 @@ class TestToolValidator:
     
     def test_check_stock_no_lookup_key(self):
         is_valid, error_msg, args = ToolValidator.validate("check_stock", {})
-        assert not is_valid  # Currently passes but should validate has_lookup_key
+        assert not is_valid
         assert error_msg is not None
+        assert "Either product_id or item_name" in error_msg
     
     def test_calc_shipping_valid(self):
         is_valid, error_msg, args = ToolValidator.validate(
