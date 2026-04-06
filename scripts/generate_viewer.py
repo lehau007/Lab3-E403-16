@@ -184,7 +184,14 @@ def main():
             const timeStr = log.timestamp ? log.timestamp.split('T')[1].substring(0, 12) : '';
             
             // Format JSON data with light syntax highlighting for string display
-            let dataStr = JSON.stringify(log.data, null, 2) || '';
+            let displayData = JSON.parse(JSON.stringify(log.data || {}));
+            
+            // Xóa phần reasoning (Thought)
+            if (log.event === 'AGENT_STEP' && displayData.llm_output) {
+                displayData.llm_output = displayData.llm_output.replace(/Thought:[\s\S]*?(?=Action:|Final Answer:|$)/i, '').trim();
+            }
+            
+            let dataStr = JSON.stringify(displayData, null, 2) || '';
             // Basic regex to wrap strings and keys
             dataStr = dataStr.replace(/"([^"]+)":/g, '<span class="highlight-key">"$1"</span>:')
                              .replace(/"([^"]+)"(?=[,\n\r}])/g, '<span class="highlight-str">"$1"</span>');

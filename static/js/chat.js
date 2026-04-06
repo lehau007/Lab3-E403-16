@@ -78,13 +78,6 @@ function appendAssistantWithReasoning(answer, reasoning) {
   message.textContent = answer || "(empty response)";
   wrap.appendChild(message);
 
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = "reasoning-btn";
-  button.textContent = "View reasoning";
-  button.addEventListener("click", () => showReasoning(reasoning));
-  wrap.appendChild(button);
-
   chatWindow.appendChild(wrap);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
