@@ -1,7 +1,7 @@
 import logging
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict
 
 class IndustryLogger:
@@ -18,7 +18,7 @@ class IndustryLogger:
 
         # File Handler (JSON)
         log_file = os.path.join(log_dir, f"{datetime.now().strftime('%Y-%m-%d')}.log")
-        file_handler = logging.FileHandler(log_file)
+        file_handler = logging.FileHandler(log_file, encoding="utf-8")
         
         # Console Handler
         console_handler = logging.StreamHandler()
@@ -29,11 +29,11 @@ class IndustryLogger:
     def log_event(self, event_type: str, data: Dict[str, Any]):
         """Logs an event with a timestamp and type."""
         payload = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "event": event_type,
             "data": data
         }
-        self.logger.info(json.dumps(payload))
+        self.logger.info(json.dumps(payload, ensure_ascii=False))
 
     def info(self, msg: str):
         self.logger.info(msg)

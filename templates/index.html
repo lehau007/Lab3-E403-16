@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop Advisor Chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <div class="aurora"></div>
+    <main class="app-shell">
+      <section class="header-panel glass">
+        <div>
+          <p class="badge">E-COMMERCE AGENT LAB</p>
+          <h1>Shop Advisor Console</h1>
+          <p class="subtitle">FastAPI UI for chatbot, ReAct v1, and ReAct v2.</p>
+        </div>
+        <button id="clearBtn" class="ghost-btn" type="button">Clear Chat</button>
+      </section>
+
+      <section class="controls-panel glass">
+        <label>
+          Mode
+          <select id="modeSelect">
+            <option value="chatbot">chatbot</option>
+            <option value="v1">v1</option>
+            <option value="v2" selected>v2</option>
+          </select>
+        </label>
+
+        <label>
+          Provider
+          <select id="providerSelect">
+            <option value="gemini" selected>gemini</option>
+            <option value="openai">openai</option>
+            <option value="local">local</option>
+          </select>
+        </label>
+
+        <label>
+          Backend
+          <select id="backendSelect">
+            <option value="json" selected>json</option>
+            <option value="sqlite">sqlite</option>
+          </select>
+        </label>
+
+        <label>
+          Max Steps
+          <input id="maxStepsInput" type="number" min="1" max="20" value="6" />
+        </label>
+
+        <label class="model-input">
+          Model (optional)
+          <input id="modelInput" type="text" placeholder="leave blank to use DEFAULT_MODEL" />
+        </label>
+      </section>
+
+      <section id="chatWindow" class="chat-window glass" aria-live="polite"></section>
+
+      <form id="chatForm" class="composer glass">
+        <textarea
+          id="messageInput"
+          rows="3"
+          placeholder="Type your shopping request... (e.g., Tôi muốn mua iPhone và ship về Hà Nội)"
+          required
+        ></textarea>
+        <button id="sendBtn" type="submit">Send</button>
+      </form>
+
+      <div id="reasoningModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="reasoningTitle">
+        <div class="modal-card">
+          <header class="modal-head">
+            <h2 id="reasoningTitle">Agent Loop Reasoning</h2>
+            <button id="closeReasoningBtn" type="button" class="ghost-btn">Close</button>
+          </header>
+          <pre id="reasoningContent" class="reasoning-content"></pre>
+        </div>
+      </div>
+    </main>
+
+    <script src="/static/js/chat.js"></script>
+  </body>
+</html>
